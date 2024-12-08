@@ -27,36 +27,34 @@ function toggleDescription(event) {
 });
 
 // Display meal sections
+
 function displayDishes(mealType, dishes) {
     const mealElement = document.getElementById(mealType);
     mealElement.style.display = 'block';
 
-    
+    createFilterSection(mealType, dishes); // Add filter section
+
     // Create mealList container dynamically each time
     let mealList = document.getElementById('mealItems');
-    
-    // If the mealList doesn't exist, create it
     if (!mealList) {
         mealList = document.createElement('div');
-        mealList.id = 'mealItems';  // Set the ID for the mealList
-        mealElement.appendChild(mealList); // Append the mealList to the mealType section
+        mealList.id = 'mealItems';
+        mealElement.appendChild(mealList);
     }
 
     // Clear previous dishes
-    mealList.innerHTML = '';  // Clear the mealList container
-        
-    // Create a container for the dishes
+    mealList.innerHTML = '';
+
     dishes.forEach((dish) => {
         const dishElement = document.createElement('div');
         dishElement.className = 'item';
         dishElement.dataset.name = dish.name;
-        dishElement.dataset.type = dish.type;
         dishElement.dataset.price = dish.price;
         dishElement.innerHTML = `
-            <img onclick="toggleDescription()" src= ${dish.img} alt = ${dish.alt}>
+            <img src=${dish.img} alt=${dish.alt}>
             <h3>${dish.name}</h3>
             <p class="description" style="display: none;">
-                <em>${dish.description}</em> 
+                <em>${dish.description}</em>
                 <em style="color: red;">${dish.price}</em>
                 <a class="show-less" onclick="toggleDescription(event)">Show Less</a>
             </p>
@@ -331,3 +329,38 @@ function display(event, type) {
 window.onload = function () {
     window.scrollTo(0, 0); // Scrolls to the top-left corner of the page
 };
+
+
+function createFilterSection(mealType) {
+    const filterElement = document.getElementById(`filter-${mealType}`);
+    
+    // Create the filter form
+    filterElement.innerHTML = `
+        <h3>Filter Items: </h3>
+        <input type="text" id="search-${mealType}" placeholder="Search by name" oninput="filterDishes('${mealType}')">
+        <label for="minPrice-${mealType}">Min Price (Riels):</label>
+        <input type="number" id="minPrice-${mealType}" oninput="filterDishes('${mealType}')">
+        <label for="maxPrice-${mealType}">Max Price (Riels):</label>
+        <input type="number" id="maxPrice-${mealType}" oninput="filterDishes('${mealType}')">
+    `;
+}
+
+function filterDishes(mealType) {
+    const searchQuery = document.getElementById(`search-${mealType}`).value.toLowerCase();
+    const minPrice = parseInt(document.getElementById(`minPrice-${mealType}`).value, 10) || 0;
+    const maxPrice = parseInt(document.getElementById(`maxPrice-${mealType}`).value, 10) || Infinity;
+
+    const mealList = document.getElementById('mealItems');
+    if (mealList) {
+        Array.from(mealList.children).forEach(item => {
+            const name = item.dataset.name.toLowerCase();
+            const price = parseInt(item.dataset.price.replace(/[^\d]/g, ''), 10);
+            
+            if (name.includes(searchQuery) && price >= minPrice && price <= maxPrice) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+}
