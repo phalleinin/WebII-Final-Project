@@ -20,14 +20,12 @@ img {
 }
 .navbar{
     font-size: 18px;
-    width: 85%;
-    height: 25px;
-    margin-left: 20px;
-    margin-right: 2px;
+    width: 100%;
     padding: 20px 0px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: nowrap;
 }
 .navbar ul li{
     list-style: none;
@@ -35,10 +33,9 @@ img {
     margin: 0 30px;
     margin-right: 10px;
     margin-left: 15vh;
-    padding-left: 10px;
+    padding-left: 15px;
     margin-inline-end: auto;
     position: relative;
-
 }
 .navbar ul li a{
     text-decoration: none;
